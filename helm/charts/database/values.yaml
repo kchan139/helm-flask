@@ -1,0 +1,37 @@
+namespace: demo
+
+service:
+  name: postgres-service
+  clusterIP: None
+
+secret:
+  name: postgres-secret
+  type: Opaque
+
+deployment:
+  name: flask
+
+statefulset:
+  name: postgres
+  port: 5432
+  replicas: 1
+  image:
+    name: localhost/db
+    tag: latest
+    pullPolicy: Never
+  requests:
+    cpu: 250m
+    mem: 256Mi
+  limits:
+    cpu: 500m
+    mem: 512Mi
+  volumeMounts:
+    name: postgres-storage
+    mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    name: postgres-storage
+    accessModes: [ReadWriteOnce]
+    storageClassName: local-path
+    resources:
+      requests:
+        storage: 1Gi

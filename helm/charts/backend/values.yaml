@@ -1,0 +1,35 @@
+service:
+  name: flask-service
+  type: ClusterIP
+
+configmap:
+  name: app-config
+  data:
+    DB_HOST: postgres-service
+
+secret:
+  name: postgres-secret
+
+deployment:
+  name: flask
+  port: 5000
+  replicas: 3
+  image:
+    name: localhost/flask-app
+    tag: latest
+    pullPolicy: Never
+  requests:
+    cpu: 250m
+    mem: 256Mi
+  limits:
+    cpu: 500m
+    mem: 512Mi
+  probes:
+    liveness:
+      path: /alive
+      initialDelay: 10
+      period: 10
+    readiness:
+      path: /health
+      initialDelay: 5
+      period: 5

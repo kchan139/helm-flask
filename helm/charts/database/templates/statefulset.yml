@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .Values.statefulset.name }}
+spec:
+  serviceName: {{ .Values.service.name }}
+  replicas: {{ .Values.statefulset.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.statefulset.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.statefulset.name }}
+    spec:
+      containers:
+        - name: {{ .Values.statefulset.name }}
+          image: "{{ .Values.statefulset.image.name }}:{{ .Values.statefulset.image.tag }}"
+          imagePullPolicy: {{ .Values.statefulset.image.pullPolicy }}
+          resources:
+            requests:
+              cpu: {{ .Values.statefulset.requests.cpu }}
+              memory: {{ .Values.statefulset.requests.mem }}
+            limits:
+              cpu: {{ .Values.statefulset.limits.cpu }}
+              memory: {{ .Values.statefulset.limits.mem }}
+          ports:
+            - containerPort: {{ .Values.statefulset.port }}
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: DB_NAME
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: DB_PASSWORD
+          volumeMounts:
+            - name: {{ .Values.statefulset.volumeMounts.name }}
+              mountPath: {{ .Values.statefulset.volumeMounts.mountPath }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.statefulset.volumeClaimTemplates.name }}
+      spec:
+        accessModes: {{ .Values.statefulset.volumeClaimTemplates.accessModes }}
+        storageClassName: {{ .Values.statefulset.volumeClaimTemplates.storageClassName }}
+        resources:
+          requests:
+            storage: {{ .Values.statefulset.volumeClaimTemplates.resources.requests.storage }}

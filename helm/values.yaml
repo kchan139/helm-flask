@@ -1,0 +1,7 @@
+namespace: demo
+
+backend:
+  namespace: demo
+
+database:
+  namespace: demo

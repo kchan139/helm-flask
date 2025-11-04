@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .Values.deployment.name }}
+  labels:
+    app: {{ .Values.deployment.name }}
+spec:
+  replicas: {{ .Values.deployment.relicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deployment.name }}
+    spec:
+      containers:
+        - image: "{{ .Values.deployment.image.name }}:{{ .Values.deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+          name: {{ .Values.deployment.name }}
+          resources:
+            requests:
+              cpu: {{ .Values.deployment.requests.cpu }}
+              memory: {{ .Values.deployment.requests.mem }}
+            limits:
+              cpu: {{ .Values.deployment.limits.cpu }}
+              memory: {{ .Values.deployment.limits.mem }}
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configmap.name }}
+                  key: DB_HOST
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secret.name }}
+          livenessProbe:
+            httpGet:
+              # path: /health
+              path: {{ .Values.deployment.probes.liveness.path }}
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: {{ .Values.deployment.probes.liveness.initialDelay }}
+            periodSeconds: {{ .Values.deployment.probes.liveness.period }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.deployment.probes.readiness.path }}
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: {{ .Values.deployment.probes.readiness.initialDelay }}
+            periodSeconds: {{ .Values.deployment.probes.readiness.period }}

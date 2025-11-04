@@ -1,0 +1,11 @@
+apiVersion: v2
+name: app-stack
+namespace: demo
+version: 0.1.0
+dependencies:
+  - name: backend
+    version: 0.1.0
+    repository: "file://../backend"
+  - name: database
+    version: 0.1.0
+    repository: "file://../database"
