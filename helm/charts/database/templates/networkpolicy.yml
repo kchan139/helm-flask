@@ -31,7 +31,7 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app: {{ .Values.deployment.name }}
+              app: flask
       ports:
         - protocol: TCP
           port: {{ .Values.statefulset.port }}

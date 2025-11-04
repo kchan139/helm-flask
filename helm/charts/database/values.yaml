@@ -8,9 +8,6 @@ secret:
   name: postgres-secret
   type: Opaque
 
-deployment:
-  name: flask
-
 statefulset:
   name: postgres
   port: 5432
