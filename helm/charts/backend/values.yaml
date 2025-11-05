@@ -13,10 +13,25 @@ secret:
 ingress:
   name: flask-ingress
 
+hpa:
+  name: flask-hpa
+  minReplicas: 1
+  maxReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+  metrics:
+    type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        avgUtilization: 60
+
 deployment:
   name: flask
   port: 5000
-  replicas: 2
+  replicas: 1
   image:
     name: localhost/flask-app
     tag: latest

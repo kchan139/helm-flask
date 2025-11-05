@@ -63,7 +63,10 @@ def stress():
     
     # Busy loop to consume CPU
     while time.time() - start < duration:
-        _ = sum(i * i for i in range(10000))
+        # This nested loop forces the CPU to do
+        # a lot of work before checking the time again.
+        for i in range(5000):
+            _ = sum(j * j for j in range(5000))
     
     return jsonify({
         "status": "completed",
