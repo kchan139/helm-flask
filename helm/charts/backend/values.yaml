@@ -10,10 +10,13 @@ configmap:
 secret:
   name: postgres-secret
 
+ingress:
+  name: flask-ingress
+
 deployment:
   name: flask
   port: 5000
-  replicas: 3
+  replicas: 2
   image:
     name: localhost/flask-app
     tag: latest
