@@ -1,6 +1,12 @@
 #!/bin/bash
-
 set -e
 
-kill $(cat /tmp/traefik-portforward.pid)
-rm /tmp/traefik-portforward.pid
+PID_FILE="/tmp/traefik-portforward.pid"
+
+if [ ! -f "$PID_FILE" ]; then
+    exit 1
+fi
+
+kill "$(cat "$PID_FILE")"
+rm "$PID_FILE"
+echo "Port-forward stopped"
