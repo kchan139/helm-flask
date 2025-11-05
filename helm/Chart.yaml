@@ -1,6 +1,5 @@
 apiVersion: v2
 name: app-stack
-namespace: demo
 version: 0.1.0
 dependencies:
   - name: backend
