@@ -2,13 +2,30 @@
 set -e
 
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
+ENV="dev"
+UPDATE_MONITORING=false
 
-ENV=${1:-dev} # Default to 'dev'
+# parse arguments
+for arg in "$@"; do
+  case $arg in
+    --update-monitoring)
+      UPDATE_MONITORING=true
+      ;;
+    dev|staging|prod)
+      ENV=$arg
+      ;;
+    *)
+      echo "ERROR! Unknown argument: $arg"
+      echo "usage: $0 [dev|staging|prod] [--update-monitoring]"
+      exit 1
+      ;;
+  esac
+done
 
 # validate input
 if [[ ! $ENV =~ ^(dev|staging|prod)$ ]]; then
     echo "ERROR! Invalid environment $ENV"
-    echo "usage: $0 [dev|staging|prod]"
+    echo "usage: $0 [dev|staging|prod] [--update-monitoring]"
     exit 1
 fi
 
@@ -17,21 +34,23 @@ VALUES_FILE="$PROJECT_ROOT/helm/values-$ENV.yaml"
 NAMESPACE=$(grep ^namespace $VALUES_FILE | awk '{print $2}')
 
 
-echo "--- Installing monitoring stack ---"
+if [ $UPDATE_MONITORING = true ]; then
+    echo "--- Installing monitoring stack ---"
 
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo update
 
-kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
+    kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
 
-helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
-  --namespace monitoring \
-  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
-  --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
-  --set prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues=false
+    helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
+      --namespace monitoring \
+      --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
+      --set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+      --set prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues=false
 
-echo "--- Monitoring stack installed/updated ---"
-echo
+    echo "--- Monitoring stack installed/updated ---"
+    echo
+fi
 
 echo "--- Deploying to $ENV ---"
 echo "using namespace: $NAMESPACE"
