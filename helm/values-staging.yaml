@@ -1,0 +1,36 @@
+backend:
+  deployment:
+    replicas: 2
+    image:
+      tag: staging
+    requests:
+      cpu: 200m
+      mem: 256Mi
+    limits:
+      cpu: 400m
+      mem: 512Mi
+  hpa:
+    minReplicas: 2
+    maxReplicas: 4
+    metrics:
+      resource:
+        target:
+          avgUtilization: 65
+
+database:
+  statefulset:
+    replicas: 1
+    requests:
+      cpu: 200m
+      mem: 256Mi
+    limits:
+      cpu: 400m
+      mem: 512Mi
+    volumeClaimTemplates:
+      resources:
+        requests:
+          storage: 1Gi
+
+# We don't use this value for any charts or templates
+# I put it here just for helper scripts
+namespace: staging

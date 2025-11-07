@@ -2,8 +2,9 @@
 set -e
 
 PROJECT_ROOT=$(dirname "$(realpath "$0")")/../
+IMAGE_TAG=${1:-latest}
 
-# Detect container tool
+# detect container engine
 if command -v podman &> /dev/null; then
     TOOL=podman
 elif command -v docker &> /dev/null; then
@@ -15,25 +16,13 @@ fi
 
 echo
 echo "--- Building Flask App ---"
-$TOOL build -t localhost/flask-app:latest "$PROJECT_ROOT/backend"
-$TOOL save localhost/flask-app:latest | sudo k3s ctr images import -
-
-# echo
-# echo "--- Importing Flask App ---"
-# $TOOL save localhost/flask-app:latest -o /tmp/flask.tar
-# sudo k3s ctr images import /tmp/flask.tar
-# rm /tmp/flask.tar
+$TOOL build -t localhost/flask-app:$IMAGE_TAG "$PROJECT_ROOT/backend"
+$TOOL save localhost/flask-app:$IMAGE_TAG | sudo k3s ctr images import -
 
 echo
 echo "--- Building Postgres DB ---"
-$TOOL build -t localhost/db:latest "$PROJECT_ROOT/database"
-$TOOL save localhost/db:latest | sudo k3s ctr images import -
-
-# echo
-# echo "--- Importing Postgres DB ---"
-# $TOOL save localhost/db:latest -o /tmp/db.tar
-# sudo k3s ctr images import /tmp/db.tar
-# rm /tmp/db.tar
+$TOOL build -t localhost/db:$IMAGE_TAG "$PROJECT_ROOT/database"
+$TOOL save localhost/db:$IMAGE_TAG | sudo k3s ctr images import -
 
 echo
 echo "---"

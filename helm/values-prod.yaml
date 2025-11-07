@@ -1,0 +1,37 @@
+backend:
+  deployment:
+    replicas: 3
+    image:
+      tag: stable
+      pullPolicy: IfNotPresent
+    requests:
+      cpu: 250m
+      mem: 256Mi
+    limits:
+      cpu: 500m
+      mem: 512Mi
+  hpa:
+    minReplicas: 3
+    maxReplicas: 10
+    metrics:
+      resource:
+        target:
+          avgUtilization: 60
+
+database:
+  statefulset:
+    replicas: 1
+    requests:
+      cpu: 250m
+      mem: 256Mi
+    limits:
+      cpu: 500m
+      mem: 512Mi
+    volumeClaimTemplates:
+      resources:
+        requests:
+          storage: 5Gi
+
+# We don't use this value for any charts or templates
+# I put it here just for helper scripts
+namespace: prod
