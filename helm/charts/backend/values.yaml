@@ -13,6 +13,12 @@ secret:
 ingress:
   name: flask-ingress
 
+monitor:
+  endpoints:
+    port: http
+    path: /metrics
+    interval: 15s
+
 hpa:
   name: flask-hpa
   minReplicas: 1

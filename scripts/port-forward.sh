@@ -1,17 +1,23 @@
 #!/bin/bash
 set -e
 
-LOCAL_PORT=8000
-REMOTE_PORT=80
-NAMESPACE="kube-system"
-SERVICE="traefik"
-PID_FILE="/tmp/traefik-portforward.pid"
-
 echo "--- STARTING PORT-FORWARD ---"
 
-if nohup kubectl -n "$NAMESPACE" port-forward svc/"$SERVICE" "$LOCAL_PORT":"$REMOTE_PORT" >/dev/null 2>&1 & then
-    echo $! > "$PID_FILE"
-    echo "Port-forward started: $LOCAL_PORT → $REMOTE_PORT (PID $(cat $PID_FILE))"
-else
-    exit 1
-fi
+# start all port-forwards in a single nohup session
+nohup bash -c '
+  # traefik
+  kubectl -n kube-system port-forward svc/traefik 8000:80 > /tmp/traefik-portforward.log 2>&1 &
+  
+  # grafana
+  kubectl -n monitoring port-forward svc/prometheus-grafana 3000:80 > /tmp/grafana-portforward.log 2>&1 &
+  
+  # prometheus
+  kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090 > /tmp/prometheus-portforward.log 2>&1 &
+  
+  # wait for background processes
+  wait
+' > /tmp/all-portforwards.log 2>&1 &
+
+echo $! > /tmp/all-portforwards.pid
+echo "all port-forwards started (PID $(cat /tmp/all-portforwards.pid))"
+

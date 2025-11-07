@@ -11,7 +11,14 @@ if [[ ! $ENV =~ ^(dev|staging|prod)$ ]]; then
     exit 1
 fi
 
+echo "--- Cleaning things up ---"
+
 VALUES_FILE="$PROJECT_ROOT/helm/values-$ENV.yaml"
 NAMESPACE=$(grep ^namespace $VALUES_FILE | awk '{print $2}')
 
 helm uninstall app -n $NAMESPACE
+
+kubectl scale deployment --all --replicas=0 -n monitoring
+kubectl scale statefulset --all --replicas=0 -n monitoring
+echo
+echo "--- Completed ---"

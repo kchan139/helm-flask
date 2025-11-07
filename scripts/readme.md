@@ -14,7 +14,7 @@ Helper scripts for building, deploying, and managing the application.
 
 ```bash
 ./watch-pods.sh [env]         # watch pods in [env] (default: dev)
-./port-forward.sh             # forward traefik to localhost:8000
+./port-forward.sh             # forward traefik, grafana, prometheus
 ./stop-port-forward.sh
 ```
 

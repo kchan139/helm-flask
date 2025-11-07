@@ -9,6 +9,11 @@ backend:
     limits:
       cpu: 250m
       mem: 256Mi
+
+  monitor:
+    endpoints:
+      interval: 5s
+
   hpa:
     minReplicas: 1
     maxReplicas: 2

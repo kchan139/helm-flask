@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.deployment.name }}-monitor
+  labels:
+    app: {{ .Values.deployment.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.name }}
+  endpoints:
+    - port: {{ .Values.monitor.endpoints.port }}
+      path: {{ .Values.monitor.endpoints.path }}
+      interval: {{ .Values.monitor.endpoints.internval }}
