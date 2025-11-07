@@ -25,12 +25,21 @@ helm upgrade --install app helm/ \
     -n $NAMESPACE \
     --create-namespace
 
-sleep 0.25
+echo
+echo "--- Waiting for pods ---"
+
+# wait 20s
+if ! kubectl wait --for=condition=ready pod --all -n "$NAMESPACE" --timeout=20s; then
+    echo
+    echo "---"
+    kubectl get po -n "$NAMESPACE"
+    exit 1
+fi
+
 echo
 echo "---"
 helm ls -n $NAMESPACE
 
-sleep 0.25
 echo
 echo "---"
 kubectl get po -n $NAMESPACE
