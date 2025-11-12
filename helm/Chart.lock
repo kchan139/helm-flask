@@ -2,8 +2,14 @@ dependencies:
 - name: backend
   repository: file://charts/backend
   version: 0.1.0
+- name: database
+  repository: file://charts/database
+  version: 0.1.0
+- name: rbac
+  repository: file://charts/rbac
+  version: 0.1.0
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
   version: 79.2.1
-digest: sha256:05ce268c21fe1fae782472ad563fd2f993b95341c0cb248198dbb59d15466ded
-generated: "2025-11-12T15:10:44.851882348+07:00"
+digest: sha256:4f0fc9e942f79fb19a5117fbdf5529f5feceb2873da071e7e418ff8d7c8b8c7e
+generated: "2025-11-12T20:34:42.914492445+07:00"

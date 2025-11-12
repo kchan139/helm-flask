@@ -5,6 +5,12 @@ dependencies:
   - name: backend
     version: 0.1.0
     repository: "file://charts/backend"
+  - name: database
+    version: 0.1.0
+    repository: "file://charts/database"
+  - name: rbac
+    version: 0.1.0
+    repository: "file://charts/rbac"
   - name: kube-prometheus-stack
     version: 79.2.1
     repository: https://prometheus-community.github.io/helm-charts
