@@ -23,6 +23,9 @@ hpa:
   name: flask-hpa
   minReplicas: 1
   maxReplicas: 3
+  behavior:
+    scaleDown:
+      seconds: 60
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment

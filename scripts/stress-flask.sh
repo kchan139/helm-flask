@@ -1,6 +1,9 @@
 #!/bin/bash
-set -e 
+DURATION=${1:-30}  # default 30s
+RATE_LIMIT=0.01
+END_TIME=$((SECONDS + DURATION))
 
-for i in {1..5}; do
-  curl "http://localhost:8000/stress?duration=120" &
+while [ $SECONDS -lt $END_TIME ]; do
+  curl -s localhost:8000 > /dev/null || echo "request failed"
+  sleep $RATE_LIMIT
 done

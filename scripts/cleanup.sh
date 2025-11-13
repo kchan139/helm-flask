@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
 ENV=${1:-dev}
@@ -12,13 +11,15 @@ if [[ ! $ENV =~ ^(dev|staging|prod)$ ]]; then
 fi
 
 echo "--- Cleaning things up ---"
+echo
 
 VALUES_FILE="$PROJECT_ROOT/helm/values-$ENV.yaml"
 NAMESPACE=$(grep ^namespace $VALUES_FILE | awk '{print $2}')
 
-helm uninstall app -n $NAMESPACE
+helm uninstall app -n $NAMESPACE &>/dev/null
+echo "release \"app\" uninstalled"
 
-kubectl scale deployment --all --replicas=0 -n monitoring
-kubectl scale statefulset --all --replicas=0 -n monitoring
+kubectl scale deployment --all --replicas=0 -n monitoring 2>/dev/null
+kubectl scale statefulset --all --replicas=0 -n monitoring 2>/dev/null
 echo
 echo "--- Completed ---"

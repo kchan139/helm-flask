@@ -16,7 +16,6 @@ VALUES_FILE="$PROJECT_ROOT/helm/values-$ENV.yaml"
 NAMESPACE=$(grep ^namespace $VALUES_FILE | awk '{print $2}')
 
 echo "--- Deploying to $ENV ---"
-echo "using namespace: $NAMESPACE"
 echo
 
 helm upgrade --install app helm/ \

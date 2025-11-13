@@ -11,4 +11,4 @@ spec:
   endpoints:
     - port: {{ .Values.monitor.endpoints.port }}
       path: {{ .Values.monitor.endpoints.path }}
-      interval: {{ .Values.monitor.endpoints.internval }}
+      interval: {{ .Values.monitor.endpoints.interval }}

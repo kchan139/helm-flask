@@ -82,28 +82,6 @@ def metrics():
     return Response(generate_latest(), mimetype="text/plain")
 
 
-@app.route("/stress")
-def stress():
-    """CPU stress endpoint for testing HPA"""
-    duration = int(request.args.get("duration", 30))  # seconds
-    start = time.time()
-
-    # Busy loop to consume CPU
-    while time.time() - start < duration:
-        # This nested loop forces the CPU to do
-        # a lot of work before checking the time again.
-        for i in range(5000):
-            _ = sum(j * j for j in range(5000))
-
-    return jsonify(
-        {
-            "status": "completed",
-            "duration": duration,
-            "message": "CPU stress test finished",
-        }
-    )
-
-
 if __name__ == "__main__":
     # app.run(host="0.0.0.0", port=5000, debug=True)
     pass

@@ -9,6 +9,9 @@ spec:
     name: {{ .Values.deployment.name }}
   minReplicas: {{ .Values.hpa.minReplicas }}
   maxReplicas: {{ .Values.hpa.maxReplicas }}
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.hpa.behavior.scaleDown.seconds}}
   metrics:
   - type: {{ .Values.hpa.metrics.type }}
     resource:
