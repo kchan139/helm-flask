@@ -6,7 +6,7 @@ ENV=${1:-dev}
 
 # validate input
 if [[ ! $ENV =~ ^(dev|staging|prod)$ ]]; then
-    echo "ERROR! Invalid environment $ENV"
+    echo " ✘ ERROR! Invalid environment $ENV"
     echo "usage: $0 [ dev | staging | prod ]"
     exit 1
 fi
@@ -34,6 +34,8 @@ if ! kubectl wait --for=condition=ready pod --all -n "$NAMESPACE" --timeout=20s;
     exit 1
 fi
 
+echo
+echo " ✔ COMPLETED"
 echo
 echo "---"
 helm ls -n $NAMESPACE

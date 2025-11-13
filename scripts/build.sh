@@ -10,7 +10,7 @@ if command -v podman &> /dev/null; then
 elif command -v docker &> /dev/null; then
     TOOL=docker
 else
-    echo "Error: podman or docker is not installed." >&2
+    echo " ✘ ERROR: podman or docker not installed." >&2
     exit 1
 fi
 
@@ -25,5 +25,4 @@ $TOOL build -t localhost/db:$IMAGE_TAG "$PROJECT_ROOT/database"
 $TOOL save localhost/db:$IMAGE_TAG | sudo k3s ctr images import -
 
 echo
-echo "---"
-echo "BUILD SUCCEEDED"
+echo " ✔ BUILD SUCCEEDED"

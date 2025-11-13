@@ -6,7 +6,7 @@ ENV=${1:-dev}
 # validate input
 if [[ ! $ENV =~ ^(dev|staging|prod)$ ]]; then
     echo "ERROR! Invalid environment $ENV"
-    echo "usage: $0 [dev|staging|prod]"
+    echo "usage: $0 [ dev | staging | prod ]"
     exit 1
 fi
 
@@ -22,4 +22,4 @@ echo "release \"app\" uninstalled"
 kubectl scale deployment --all --replicas=0 -n monitoring 2>/dev/null
 kubectl scale statefulset --all --replicas=0 -n monitoring 2>/dev/null
 echo
-echo "--- Completed ---"
+echo " ✔ COMPLETED"

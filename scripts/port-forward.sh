@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "--- STARTING PORT-FORWARD ---"
+echo "--- Starting port-forward ---"
 
 # start all port-forwards in a single nohup session
 nohup bash -c '

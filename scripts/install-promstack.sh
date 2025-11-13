@@ -15,4 +15,4 @@ helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
   --set prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues=false
 
 echo
-echo "--- Completed ---"
+echo " ✔ COMPLETED"

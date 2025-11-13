@@ -1,9 +1,11 @@
 #!/bin/bash
-DURATION=${1:-30}  # default 30s
-RATE_LIMIT=0.01
-END_TIME=$((SECONDS + DURATION))
+hey -z 20s -c 5 http://localhost:8000
 
-while [ $SECONDS -lt $END_TIME ]; do
-  curl -s localhost:8000 > /dev/null || echo "request failed"
-  sleep $RATE_LIMIT
-done
+# DURATION=${1:-30}  # default 30s
+# RATE_LIMIT=0.01
+# END_TIME=$((SECONDS + DURATION))
+
+# while [ $SECONDS -lt $END_TIME ]; do
+#   curl -s localhost:8000 > /dev/null || echo " ✘ request failed"
+#   sleep $RATE_LIMIT
+# done

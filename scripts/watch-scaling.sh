@@ -2,21 +2,20 @@
 set -e
 
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
-ENV=${1:-dev}
 
-if [[ ! $ENV =~ ^(dev|staging|prod)$ ]]; then
-    echo "ERROR! Invalid environment $ENV"
-    echo "usage: $0 [dev|staging|prod]"
-    exit 1
-fi
-
-VALUES_FILE="$PROJECT_ROOT/helm/values-$ENV.yaml"
-NAMESPACE=$(grep ^namespace $VALUES_FILE | awk '{print $2}')
-
-watch -n1 "
-echo '---'
-kubectl get po -n $NAMESPACE
+watch -n 0.5 bash -c "
 echo
-echo '---'
-kubectl get hpa -n $NAMESPACE
+for ENV in dev staging prod; do
+  VALUES_FILE=\"$PROJECT_ROOT/helm/values-\$ENV.yaml\"
+
+  NAMESPACE=\$(grep ^namespace \$VALUES_FILE | awk '{print \$2}')
+  echo '  --- Watching' \$ENV '---  '
+  
+  kubectl get po -n \$NAMESPACE
+  echo
+  kubectl get hpa -n \$NAMESPACE 2>/dev/null
+
+  echo
+done
 "
+
