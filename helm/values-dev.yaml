@@ -1,8 +1,11 @@
 backend:
   deployment:
     replicas: 1
+    strategy:
+      type: Recreate
     image:
       tag: latest
+      # tag: broken
     requests:
       cpu: 100m
       mem: 128Mi

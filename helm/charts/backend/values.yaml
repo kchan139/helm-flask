@@ -41,6 +41,8 @@ deployment:
   name: flask
   port: 5000
   replicas: 1
+  strategy:
+    type: RollingUpdate
   image:
     name: localhost/flask-app
     tag: latest

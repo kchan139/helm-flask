@@ -6,6 +6,8 @@ metadata:
     app: {{ .Values.deployment.name }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
+  strategy:
+    type: {{ .Values.deployment.strategy.type }}
   selector:
     matchLabels:
       app: {{ .Values.deployment.name }}
