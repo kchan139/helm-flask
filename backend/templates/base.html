@@ -6,104 +6,140 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', sans-serif;
+            background: #f5f5f7;
+            color: #1d1d1f;
+            padding: 60px 20px;
+            line-height: 1.5;
         }
-        .container { max-width: 800px; margin: 0 auto; }
+        .container { max-width: 680px; margin: 0 auto; }
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: #fff;
+            border-radius: 18px;
+            padding: 32px;
+            margin-bottom: 12px;
         }
-        h1 { color: #333; margin-bottom: 20px; }
-        h2 { color: #555; margin-bottom: 15px; font-size: 1.3em; }
-        input, button {
+        h1 { 
+            font-size: 40px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        h2 { 
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: -0.3px;
+        }
+        input, button, .btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px 16px;
             margin: 8px 0;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 17px;
+        }
+        input {
+            background: #f5f5f7;
+        }
+        input:focus {
+            outline: 2px solid #0071e3;
+            background: #fff;
         }
         button, .btn {
-            background: #667eea;
-            color: white;
-            border: none;
+            background: #0071e3;
+            color: #fff;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
             text-decoration: none;
             display: inline-block;
             text-align: center;
+            font-weight: 500;
+            transition: background 0.2s;
         }
-        button:hover, .btn:hover { background: #5568d3; }
+        button:hover, .btn:hover { 
+            background: #0077ed;
+        }
         .back-btn {
-            background: #6c757d;
+            background: #f5f5f7;
+            color: #1d1d1f;
             width: auto;
             padding: 10px 20px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 15px;
         }
-        .back-btn:hover { background: #5a6268; }
-        .add-btn { background: #28a745; margin-bottom: 10px; }
-        .add-btn:hover { background: #218838; }
-        .remove-btn { 
-            background: #dc3545; 
-            width: auto; 
-            padding: 12px 20px;
+        .back-btn:hover { background: #e8e8ed; }
+        .add-btn { 
+            background: #f5f5f7;
+            color: #1d1d1f;
+            margin-bottom: 12px;
         }
+        .add-btn:hover { background: #e8e8ed; }
         .option-input { display: flex; gap: 8px; margin: 8px 0; }
         .option-input input { flex: 1; }
         .poll-item {
-            padding: 15px;
-            border: 2px solid #eee;
-            border-radius: 8px;
-            margin: 10px 0;
-            display: block;
-            color: #333;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .poll-item:hover { border-color: #667eea; background: #f8f9ff; }
-        .poll-option {
-            padding: 15px;
+            padding: 20px;
             margin: 8px 0;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            display: block;
+            color: #1d1d1f;
+            text-decoration: none;
+            background: #fff;
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+        .poll-item:hover { 
+            transform: scale(1.01);
+        }
+        .poll-item strong {
+            font-size: 19px;
+            font-weight: 600;
+        }
+        .poll-option {
+            padding: 16px;
+            margin: 8px 0;
+            background: #f5f5f7;
+            border-radius: 12px;
             position: relative;
-            overflow: hidden;
+            transition: background 0.2s;
+        }
+        .poll-option:has(input:checked) {
+            background: #e3f2fd;
         }
         .poll-option input[type="radio"] {
             width: auto;
-            margin-right: 10px;
+            margin-right: 12px;
+            accent-color: #0071e3;
         }
         .poll-option label {
             cursor: pointer;
             display: flex;
             align-items: center;
-            position: relative;
-            z-index: 1;
         }
         .result-bar {
             position: absolute;
             left: 0;
             top: 0;
             height: 100%;
-            background: linear-gradient(90deg, #667eea33, transparent);
-            transition: width 0.5s;
-            z-index: 0;
+            background: #0071e3;
+            opacity: 0.12;
+            border-radius: 12px;
+            transition: width 0.4s ease;
         }
         .result-content {
             position: relative;
-            z-index: 1;
             display: flex;
             justify-content: space-between;
+            font-size: 17px;
         }
-        .stats { color: #666; font-size: 14px; margin-top: 10px; }
-        .error { color: #dc3545; margin: 10px 0; }
+        .stats { 
+            color: #86868b;
+            font-size: 15px;
+            margin-top: 6px;
+        }
+        .error { 
+            color: #ff3b30;
+            margin: 12px 0;
+        }
     </style>
 </head>
 <body>
