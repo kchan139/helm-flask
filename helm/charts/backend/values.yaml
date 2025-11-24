@@ -1,3 +1,9 @@
+ingress:
+  name: flask-ingress
+  host: homelab
+  tls:
+    secretName: flask-tls-prod
+
 service:
   name: flask-service
   type: ClusterIP
@@ -9,9 +15,6 @@ configmap:
 
 secret:
   name: postgres-secret
-
-ingress:
-  name: flask-ingress
 
 monitor:
   endpoints:

@@ -34,12 +34,20 @@ kubectl create secret generic postgres-secret \
   --from-literal=DB_PASSWORD="$DB_PASSWORD" \
   --dry-run=client -o yaml > /tmp/secret.yaml
 
+TARGET_FILE="$PROJECT_ROOT/helm/charts/database/templates/sealedsecret-$ENV.yaml"
+
+# prepend guard
+echo "{{- if eq .Values.global.environment \"$ENV\" }}" > "$TARGET_FILE"
+
 # encrypt using kubeseal
 kubeseal --format=yaml \
   --namespace="$ENV" \
-  < /tmp/secret.yaml > "$PROJECT_ROOT/helm/charts/database/templates/sealedsecret.yml"
+  < /tmp/secret.yaml >> "$TARGET_FILE"
+
+# append guard
+echo "{{- end }}" >> "$TARGET_FILE"
 
 # cleanup previously created secret
 rm /tmp/secret.yaml
 
-echo " ✔ Sealed secret created at helm/charts/database/templates/sealedsecret.yml"
+echo " ✔ Sealed secret created at $TARGET_FILE"

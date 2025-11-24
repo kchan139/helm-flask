@@ -1,3 +1,10 @@
+global:
+  environment: prod
+
+certManager:
+  enabled: true
+  email: "placeholder@example.com"
+
 backend:
   deployment:
     replicas: 3

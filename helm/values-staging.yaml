@@ -1,4 +1,13 @@
+global:
+  environment: staging
+
+certManager:
+  enabled: true
+  email: "placeholder@example.com"
+
 backend:
+  ingress:
+    host: poll.khoa.email
   deployment:
     replicas: 2
     image:

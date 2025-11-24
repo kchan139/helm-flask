@@ -1,3 +1,10 @@
+global:
+  environment: dev
+
+certManager:
+  enabled: false
+  email: "nguyen.sybau@gmail.com"
+
 backend:
   deployment:
     replicas: 1

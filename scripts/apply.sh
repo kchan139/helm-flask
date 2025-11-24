@@ -18,10 +18,23 @@ NAMESPACE=$(grep ^namespace $VALUES_FILE | awk '{print $2}')
 echo "--- Deploying to $ENV ---"
 echo
 
+# load .env for email
+if [[ "$ENV" == "prod" || "$ENV" == "staging" ]]; then
+    source "$PROJECT_ROOT/.env"
+fi
+
+# check if email is set
+SET_ARGS=""
+if [ -n "$SSL_EMAIL" ]; then
+    echo "using: $SSL_EMAIL"
+    SET_ARGS="--set certManager.email=$SSL_EMAIL"
+fi
+
 helm upgrade --install app helm/ \
     -f $VALUES_FILE \
     -n $NAMESPACE \
-    --create-namespace
+    --create-namespace \
+    $SET_ARGS
 
 echo
 echo "--- Waiting for pods ---"
