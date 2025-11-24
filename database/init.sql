@@ -1,9 +1,12 @@
 CREATE TABLE IF NOT EXISTS polls (
     id SERIAL PRIMARY KEY,
+    workspace_id VARCHAR(100) NOT NULL DEFAULT 'default',
     title VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS idx_workspace ON polls(workspace_id);
 
 CREATE TABLE IF NOT EXISTS options (
     id SERIAL PRIMARY KEY,

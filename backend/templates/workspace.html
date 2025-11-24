@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Select Workspace</h1>
+    <p class="stats">Current: {{ current }}</p>
+    
+    <form method="POST" action="/workspace/set">
+        <input name="workspace_id" placeholder="Enter workspace name" required />
+        <button type="submit">Switch Workspace</button>
+    </form>
+    
+    {% if workspaces %}
+    <h2>Existing Workspaces</h2>
+    {% for ws in workspaces %}
+    <form method="POST" action="/workspace/set" style="margin: 8px 0;">
+        <input type="hidden" name="workspace_id" value="{{ ws }}" />
+        <button type="submit" class="poll-item" style="width: 100%; text-align: left; border: none;">
+            <strong>{{ ws }}</strong>
+        </button>
+    </form>
+    {% endfor %}
+    {% endif %}
+</div>
+
+<div class="card">
+    <a href="/" class="btn">Back to Polls</a>
+</div>
+{% endblock %}
