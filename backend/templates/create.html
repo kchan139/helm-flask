@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <a href="/" class="back-btn">← Back</a>
+    <h1>Create Poll</h1>
+    
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+    
+    <form method="POST">
+        <input name="title" placeholder="Poll question" required />
+        
+        <div id="options">
+            <input name="option_1" placeholder="Option 1" required />
+            <input name="option_2" placeholder="Option 2" required />
+        </div>
+        
+        <button type="button" class="add-btn" onclick="addOption()">+ Add Option</button>
+        <input name="expires_hours" type="number" placeholder="Expires in hours (optional)" />
+        <button type="submit">Create Poll</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let optionCount = 2;
+function addOption() {
+    optionCount++;
+    const div = document.createElement('div');
+    div.innerHTML = `<input name="option_${optionCount}" placeholder="Option ${optionCount}" />`;
+    document.getElementById('options').appendChild(div);
+}
+</script>
+{% endblock %}

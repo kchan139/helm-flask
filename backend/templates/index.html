@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Quick Poll</h1>
+    <a href="/create" class="btn">Create New Poll</a>
+</div>
+
+<div class="card">
+    <h2>Active Polls</h2>
+    {% if polls %}
+        {% for poll in polls %}
+        <a href="/poll/{{ poll.id }}" class="poll-item">
+            <strong>{{ poll.title }}</strong>
+            <div class="stats">{{ poll.total_votes }} votes • Created {{ poll.created_at.strftime('%Y-%m-%d') }}</div>
+        </a>
+        {% endfor %}
+    {% else %}
+        <p>No polls yet. Create one!</p>
+    {% endif %}
+</div>
+{% endblock %}

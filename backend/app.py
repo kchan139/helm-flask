@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, render_template, redirect
 from prometheus_client import Counter, Histogram, generate_latest
 import psycopg2
 import time
@@ -6,7 +6,6 @@ import os
 
 app = Flask(__name__)
 
-# Prometheus metrics
 REQUEST_COUNT = Counter(
     "flask_request_count", "App Request Count", ["method", "endpoint", "status"]
 )
@@ -37,33 +36,138 @@ def get_db_connection():
     )
 
 
+def get_client_ip():
+    return request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0]
+
+
 @app.route("/")
 def index():
-    try:
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    cur.execute(
+        """
+        SELECT p.id, p.title, p.created_at, p.expires_at,
+               COUNT(DISTINCT v.id) as total_votes
+        FROM polls p
+        LEFT JOIN votes v ON p.id = v.poll_id
+        WHERE p.expires_at IS NULL OR p.expires_at > NOW()
+        GROUP BY p.id
+        ORDER BY p.created_at DESC
+    """
+    )
+    polls = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return render_template("index.html", polls=polls)
+
+
+@app.route("/create", methods=["GET", "POST"])
+def create_poll():
+    if request.method == "POST":
+        title = request.form.get("title")
+        options = [v for k, v in request.form.items() if k.startswith("option_") and v]
+        expires_hours = request.form.get("expires_hours")
+
+        if not title or len(options) < 2:
+            return render_template(
+                "create.html", error="Title and at least 2 options required"
+            )
+
         conn = get_db_connection()
         cur = conn.cursor()
 
-        cur.execute("INSERT INTO visits DEFAULT VALUES")
+        expires_at = None
+        if expires_hours:
+            cur.execute("SELECT NOW() + INTERVAL '%s hours'", (expires_hours,))
+            expires_at = cur.fetchone()[0]
+
+        cur.execute(
+            "INSERT INTO polls (title, expires_at) VALUES (%s, %s) RETURNING id",
+            (title, expires_at),
+        )
+        poll_id = cur.fetchone()[0]
+
+        for option in options:
+            cur.execute(
+                "INSERT INTO options (poll_id, text) VALUES (%s, %s)", (poll_id, option)
+            )
+
         conn.commit()
-
-        cur.execute("SELECT COUNT(*) FROM visits")
-        count = cur.fetchone()[0]
-
         cur.close()
         conn.close()
 
-        return jsonify({"message": "Hello World!", "visits": count})
-    except Exception as e:
-        return jsonify({"status": "error", "error": str(e)}), 500
+        return redirect(f"/poll/{poll_id}")
+
+    return render_template("create.html")
 
 
-# Liveness
+@app.route("/poll/<int:poll_id>", methods=["GET", "POST"])
+def view_poll(poll_id):
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    if request.method == "POST":
+        option_id = request.form.get("option_id")
+        voter_ip = get_client_ip()
+
+        try:
+            cur.execute(
+                "INSERT INTO votes (poll_id, voter_ip) VALUES (%s, %s)",
+                (poll_id, voter_ip),
+            )
+            cur.execute(
+                "UPDATE options SET votes = votes + 1 WHERE id = %s AND poll_id = %s",
+                (option_id, poll_id),
+            )
+            conn.commit()
+        except psycopg2.IntegrityError:
+            conn.rollback()
+
+    cur.execute(
+        "SELECT * FROM polls WHERE id = %s AND (expires_at IS NULL OR expires_at > NOW())",
+        (poll_id,),
+    )
+    poll = cur.fetchone()
+
+    if not poll:
+        cur.close()
+        conn.close()
+        return "Poll not found", 404
+
+    cur.execute(
+        "SELECT id, text, votes FROM options WHERE poll_id = %s ORDER BY id", (poll_id,)
+    )
+    options = cur.fetchall()
+
+    cur.execute("SELECT COUNT(*) as total FROM votes WHERE poll_id = %s", (poll_id,))
+    total_votes = cur.fetchone()["total"]
+
+    voter_ip = get_client_ip()
+    cur.execute(
+        "SELECT 1 FROM votes WHERE poll_id = %s AND voter_ip = %s", (poll_id, voter_ip)
+    )
+    has_voted = cur.fetchone() is not None
+
+    cur.close()
+    conn.close()
+
+    return render_template(
+        "poll.html",
+        poll=poll,
+        options=options,
+        total_votes=total_votes,
+        has_voted=has_voted,
+    )
+
+
 @app.route("/alive")
 def alive():
     return jsonify({"status": "alive"}), 200
 
 
-# Readiness
 @app.route("/health")
 def health():
     try:
@@ -83,5 +187,4 @@ def metrics():
 
 
 if __name__ == "__main__":
-    # app.run(host="0.0.0.0", port=5000, debug=True)
     pass

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <a href="/" class="back-btn">← Back to Polls</a>
+    <h1>{{ poll.title }}</h1>
+    <div class="stats">Total votes: {{ total_votes }}</div>
+    
+    {% if not has_voted %}
+    <form method="POST">
+        {% for option in options %}
+        <div class="poll-option">
+            <label>
+                <input type="radio" name="option_id" value="{{ option.id }}" required>
+                {{ option.text }}
+            </label>
+        </div>
+        {% endfor %}
+        <button type="submit">Vote</button>
+    </form>
+    {% else %}
+    {% for option in options %}
+    <div class="poll-option">
+        {% set percentage = (option.votes / total_votes * 100) | round | int if total_votes > 0 else 0 %}
+        <div class="result-bar" style="width: {{ percentage }}%"></div>
+        <div class="result-content">
+            <span>{{ option.text }}</span>
+            <span>{{ option.votes }} ({{ percentage }}%)</span>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Quick Poll{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 { color: #333; margin-bottom: 20px; }
+        h2 { color: #555; margin-bottom: 15px; font-size: 1.3em; }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button, .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        button:hover, .btn:hover { background: #5568d3; }
+        .back-btn {
+            background: #6c757d;
+            width: auto;
+            padding: 10px 20px;
+            margin-bottom: 15px;
+        }
+        .back-btn:hover { background: #5a6268; }
+        .add-btn { background: #28a745; margin-bottom: 10px; }
+        .add-btn:hover { background: #218838; }
+        .remove-btn { 
+            background: #dc3545; 
+            width: auto; 
+            padding: 12px 20px;
+        }
+        .option-input { display: flex; gap: 8px; margin: 8px 0; }
+        .option-input input { flex: 1; }
+        .poll-item {
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: block;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .poll-item:hover { border-color: #667eea; background: #f8f9ff; }
+        .poll-option {
+            padding: 15px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .poll-option input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        .poll-option label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .result-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #667eea33, transparent);
+            transition: width 0.5s;
+            z-index: 0;
+        }
+        .result-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+        }
+        .stats { color: #666; font-size: 14px; margin-top: 10px; }
+        .error { color: #dc3545; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
