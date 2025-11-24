@@ -1,7 +1,7 @@
 secrets/
 secret/
-*secrets.yml
-*secret.yml
+*.secrets.yml
+*.secret.yml
 
 # Helm dependencies
 *.tgz
